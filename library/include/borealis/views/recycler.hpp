@@ -21,6 +21,7 @@
 #include <borealis/views/rectangle.hpp>
 #include <borealis/views/scrolling_frame.hpp>
 #include <borealis/views/header.hpp>
+#include <cstdint>
 #include <functional>
 #include <map>
 #include <vector>
@@ -97,6 +98,8 @@ class RecyclerFrame;
 class RecyclerDataSource
 {
   public:
+    virtual ~RecyclerDataSource() = default;
+
     /*
      * Asks the data source to return the number of sections in the recycler frame.
      */
@@ -202,7 +205,9 @@ class RecyclerFrame : public ScrollingFrame
   private:
     RecyclerDataSource* dataSource = nullptr;
 
-    uint32_t visibleMin, visibleMax;
+    uint32_t visibleMin = UINT32_MAX;
+    uint32_t visibleMax = 0;
+    float oldWidth      = 0;
 
     float paddingTop    = 0;
     float paddingRight  = 0;
@@ -222,7 +227,7 @@ class RecyclerFrame : public ScrollingFrame
     void cellsRecyclingLoop();
     void queueReusableCell(RecyclerCell* cell);
 
-    void addCellAt(int index, int downSide);
+    void addCellAt(uint32_t index, bool downSide);
 };
 
 } // namespace brls

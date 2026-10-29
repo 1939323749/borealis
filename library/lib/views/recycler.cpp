@@ -164,8 +164,14 @@ RecyclerFrame::~RecyclerFrame()
     if (this->dataSource)
         delete dataSource;
 
+    // Cells waiting in the queue are not attached to the content box, free them here
     for (auto it : queueMap)
+    {
+        for (RecyclerCell* cell : *it.second)
+            delete cell;
+
         delete it.second;
+    }
 }
 
 void RecyclerFrame::setDataSource(RecyclerDataSource* source)
@@ -188,11 +194,11 @@ void RecyclerFrame::reloadData()
     auto children = this->contentBox->getChildren();
     for (auto const& child : children)
     {
-        queueReusableCell((RecyclerCell*)child);
         this->contentBox->removeView(child, false);
+        queueReusableCell((RecyclerCell*)child);
     }
 
-    visibleMin = UINT_MAX;
+    visibleMin = UINT32_MAX;
     visibleMax = 0;
 
     renderedFrame            = Rect();
@@ -203,16 +209,12 @@ void RecyclerFrame::reloadData()
     if (dataSource)
     {
         cacheCellFrames();
-        Rect frame  = getFrame();
-        int counter = 0;
-        for (int section = 0; section < dataSource->numberOfSections(this); section++)
+        Rect frame = getFrame();
+        for (uint32_t index = 0; index < cacheIndexPathData.size(); index++)
         {
-            for (int row = -1; row < dataSource->numberOfRows(this, section); row++)
-            {
-                addCellAt(counter++, true);
-                if (renderedFrame.getMaxY() > frame.getMaxY())
-                    break;
-            }
+            addCellAt(index, true);
+            if (renderedFrame.getMaxY() > frame.getMaxY())
+                break;
         }
     }
 }
@@ -252,7 +254,16 @@ RecyclerCell* RecyclerFrame::dequeueReusableCell(std::string identifier)
 
 void RecyclerFrame::queueReusableCell(RecyclerCell* cell)
 {
-    queueMap.at(cell->reuseIdentifier)->push_back(cell);
+    auto it = queueMap.find(cell->reuseIdentifier);
+
+    // Cells not created by dequeueReusableCell() cannot be reused
+    if (it == queueMap.end())
+    {
+        delete cell;
+        return;
+    }
+
+    it->second->push_back(cell);
 }
 
 void RecyclerFrame::cacheCellFrames()
@@ -287,8 +298,7 @@ void RecyclerFrame::cacheCellFrames()
 
 bool RecyclerFrame::checkWidth()
 {
-    float width           = getWidth();
-    static float oldWidth = width;
+    float width = getWidth();
     if (oldWidth != width && width != 0)
     {
         oldWidth = width;
@@ -318,8 +328,8 @@ void RecyclerFrame::cellsRecyclingLoop()
         renderedFrame.origin.y += cellHeight;
         renderedFrame.size.height -= cellHeight;
 
-        queueReusableCell(minCell);
         this->contentBox->removeView(minCell, false);
+        queueReusableCell(minCell);
 
         Logger::debug("Cell #" + std::to_string(visibleMin) + " - destroyed");
 
@@ -339,8 +349,8 @@ void RecyclerFrame::cellsRecyclingLoop()
         float cellHeight = maxCell->getHeight();
         renderedFrame.size.height -= cellHeight;
 
-        queueReusableCell(maxCell);
         this->contentBox->removeView(maxCell, false);
+        queueReusableCell(maxCell);
 
         Logger::debug("Cell #" + std::to_string(visibleMax) + " - destroyed");
 
@@ -360,7 +370,7 @@ void RecyclerFrame::cellsRecyclingLoop()
     }
 }
 
-void RecyclerFrame::addCellAt(int index, int downSide)
+void RecyclerFrame::addCellAt(uint32_t index, bool downSide)
 {
     IndexPath indexPath = cacheIndexPathData[index];
 

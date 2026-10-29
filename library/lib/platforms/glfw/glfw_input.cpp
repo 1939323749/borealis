@@ -120,13 +120,6 @@ void GLFWInputManager::updateControllerState(ControllerState* state)
     }
 }
 
-bool sameSign(int a, int b)
-{
-    if (a == 0 || b == 0)
-        return true;
-    return (a >= 0) ^ (b < 0);
-}
-
 void GLFWInputManager::updateTouchState(RawTouchState* state)
 {
     // Get touchscreen state

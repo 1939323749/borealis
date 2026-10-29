@@ -696,6 +696,11 @@ void View::setActionAvailable(enum ControllerButton button, bool available)
 
 void View::setParent(Box* parent, void* parentUserdata)
 {
+    // Free the previous userdata, if any, since views can be moved
+    // from one parent to another (recycled cells for instance)
+    if (this->parentUserdata && this->parentUserdata != parentUserdata)
+        free(this->parentUserdata);
+
     this->parent         = parent;
     this->parentUserdata = parentUserdata;
 }
