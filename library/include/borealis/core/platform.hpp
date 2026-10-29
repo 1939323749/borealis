@@ -21,6 +21,7 @@
 #include <borealis/core/input.hpp>
 #include <borealis/core/theme.hpp>
 #include <borealis/core/video.hpp>
+#include <cstdint>
 #include <string>
 
 namespace brls

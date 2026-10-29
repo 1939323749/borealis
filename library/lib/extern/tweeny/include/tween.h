@@ -30,6 +30,7 @@
 #ifndef TWEENY_TWEEN_H
 #define TWEENY_TWEEN_H
 
+#include <cstdint>
 #include <tuple>
 #include <vector>
 #include <functional>
