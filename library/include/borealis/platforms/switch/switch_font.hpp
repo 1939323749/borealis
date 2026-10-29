@@ -26,7 +26,10 @@ class SwitchFontLoader : public FontLoader
 {
   public:
     void loadFonts() override;
-    bool loadSharedFontFallbackOrder(SharedFontFallbackOrder* order_list, int order_list_count = HOSSharedFontType_Total) override;
+    bool getSharedFontFallbackOrder(SharedFontFallbackOrder* order) override;
+
+  private:
+    SharedFontFallbackOrder fallbackOrder;
 };
 
 } // namespace brls
