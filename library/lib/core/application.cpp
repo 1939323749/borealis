@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <borealis/core/application.hpp>
+#include <cmath>
 #include <borealis/core/font.hpp>
 #include <borealis/core/i18n.hpp>
 #include <borealis/core/time.hpp>
@@ -53,6 +54,9 @@ constexpr uint32_t ORIGINAL_WINDOW_HEIGHT = 720;
 // Held buttons repeat after BUTTON_REPEAT_DELAY ms, every BUTTON_REPEAT_CADENCY ms
 #define BUTTON_REPEAT_DELAY 250
 #define BUTTON_REPEAT_CADENCY 83
+
+// Sticks are translated to DPAD buttons past this threshold
+#define STICK_TO_DPAD_THRESHOLD 0.5f
 
 namespace brls
 {
@@ -193,6 +197,7 @@ bool Application::mainLoop()
     InputManager* inputManager = Application::platform->getInputManager();
     inputManager->updateTouchState(&rawTouch);
     inputManager->updateControllerState(&controllerState);
+    Application::translateSticksToDpad(&controllerState);
 
     static TouchState oldTouch;
     TouchState touchState = InputManager::computeTouchState(rawTouch, oldTouch);
@@ -279,6 +284,36 @@ bool Application::mainLoop()
     Application::frame();
 
     return true;
+}
+
+void Application::translateSticksToDpad(ControllerState* state)
+{
+    static const ControllerAxis sticks[][2] = {
+        { LEFT_X, LEFT_Y },
+        { RIGHT_X, RIGHT_Y },
+    };
+
+    for (auto& stick : sticks)
+    {
+        float x = state->axes[stick[0]];
+        float y = state->axes[stick[1]];
+
+        // Only consider the dominant direction to avoid navigating diagonally
+        if (fabs(x) > fabs(y))
+        {
+            if (x <= -STICK_TO_DPAD_THRESHOLD)
+                state->buttons[BUTTON_LEFT] = true;
+            else if (x >= STICK_TO_DPAD_THRESHOLD)
+                state->buttons[BUTTON_RIGHT] = true;
+        }
+        else
+        {
+            if (y <= -STICK_TO_DPAD_THRESHOLD)
+                state->buttons[BUTTON_UP] = true;
+            else if (y >= STICK_TO_DPAD_THRESHOLD)
+                state->buttons[BUTTON_DOWN] = true;
+        }
+    }
 }
 
 Platform* Application::getPlatform()
@@ -405,7 +440,7 @@ bool Application::setInputType(InputType type)
 
     Application::inputType = type;
 
-    if (type == InputType::GAMEPAD)
+    if (type == InputType::GAMEPAD && Application::currentFocus)
         Application::currentFocus->onFocusGained();
 
     return true;

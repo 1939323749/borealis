@@ -28,10 +28,10 @@ static const uint64_t SWITCH_BUTTONS_MAPPING[_BUTTON_MAX] = {
 
     HidNpadButton_StickL, // BUTTON_LSB
 
-    HidNpadButton_AnyUp, // BUTTON_UP
-    HidNpadButton_AnyRight, // BUTTON_RIGHT
-    HidNpadButton_AnyDown, // BUTTON_DOWN
-    HidNpadButton_AnyLeft, // BUTTON_LEFT
+    HidNpadButton_Up, // BUTTON_UP
+    HidNpadButton_Right, // BUTTON_RIGHT
+    HidNpadButton_Down, // BUTTON_DOWN
+    HidNpadButton_Left, // BUTTON_LEFT
 
     HidNpadButton_Minus, // BUTTON_BACK
     HidNpadButton_None, // BUTTON_GUIDE
@@ -64,6 +64,15 @@ void SwitchInputManager::updateControllerState(ControllerState* state)
         uint64_t switchKey = SWITCH_BUTTONS_MAPPING[i];
         state->buttons[i]  = keysDown & switchKey;
     }
+
+    // Sticks (translated to DPAD by the library)
+    HidAnalogStickState leftStick  = padGetStickPos(&this->padState, 0);
+    HidAnalogStickState rightStick = padGetStickPos(&this->padState, 1);
+
+    state->axes[LEFT_X]  = (float)leftStick.x / JOYSTICK_MAX;
+    state->axes[LEFT_Y]  = (float)-leftStick.y / JOYSTICK_MAX;
+    state->axes[RIGHT_X] = (float)rightStick.x / JOYSTICK_MAX;
+    state->axes[RIGHT_Y] = (float)-rightStick.y / JOYSTICK_MAX;
 }
 
 void SwitchInputManager::updateTouchState(RawTouchState* state)

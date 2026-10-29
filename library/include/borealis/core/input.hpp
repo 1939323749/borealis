@@ -72,7 +72,7 @@ enum ControllerAxis
 struct ControllerState
 {
     bool buttons[_BUTTON_MAX]; // true: pressed
-    float axes[_AXES_MAX]; // from 0.0f to 1.0f
+    float axes[_AXES_MAX]; // from -1.0f to 1.0f, X: left to right, Y: up to down
 };
 
 // Represents a touch phase in the current frame

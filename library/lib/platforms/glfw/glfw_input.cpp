@@ -118,6 +118,16 @@ void GLFWInputManager::updateControllerState(ControllerState* state)
         size_t brlsButton          = GLFW_BUTTONS_MAPPING[i];
         state->buttons[brlsButton] = (bool)glfwState.buttons[i];
     }
+
+    // Triggers are axes in GLFW, from -1.0f (released) to 1.0f (fully pressed)
+    state->buttons[BUTTON_LT] = glfwState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER] > 0.0f;
+    state->buttons[BUTTON_RT] = glfwState.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER] > 0.0f;
+
+    // Sticks (translated to DPAD by the library)
+    state->axes[LEFT_X]  = glfwState.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
+    state->axes[LEFT_Y]  = glfwState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
+    state->axes[RIGHT_X] = glfwState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X];
+    state->axes[RIGHT_Y] = glfwState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y];
 }
 
 void GLFWInputManager::updateTouchState(RawTouchState* state)

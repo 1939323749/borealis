@@ -265,6 +265,12 @@ class Application
      */
     static bool handleAction(char button);
 
+    /**
+     * Translates the sticks position of the given
+     * controller state to DPAD buttons presses
+     */
+    static void translateSticksToDpad(ControllerState* state);
+
     static void registerBuiltInXMLViews();
 
     static ActionIdentifier registerFPSToggleAction(Activity* activity);
