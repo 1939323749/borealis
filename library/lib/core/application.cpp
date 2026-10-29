@@ -542,6 +542,10 @@ void Application::frame()
         view->frame(&frameContext);
     }
 
+    // Framerate counter
+    if (Application::displayFramerate)
+        Application::drawFramerate(frameContext.vg);
+
     // End frame
     nvgResetTransform(Application::getNVGContext()); // scale
     nvgEndFrame(Application::getNVGContext());
@@ -560,12 +564,57 @@ void Application::exit()
 
 void Application::setDisplayFramerate(bool enabled)
 {
-    // To be implemented
+    Application::displayFramerate      = enabled;
+    Application::framerateCounter      = 0;
+    Application::framerate             = 0;
+    Application::framerateCounterStart = getCPUTimeUsec();
 }
 
 void Application::toggleFramerateDisplay()
 {
-    // To be implemented (call setDisplayFramerate)
+    Application::setDisplayFramerate(!Application::displayFramerate);
+}
+
+void Application::drawFramerate(NVGcontext* vg)
+{
+    // Update the counter once every second
+    Application::framerateCounter++;
+
+    Time now     = getCPUTimeUsec();
+    Time elapsed = now - Application::framerateCounterStart;
+    if (elapsed >= 1000000)
+    {
+        Application::framerate             = (unsigned)(Application::framerateCounter * 1000000 / elapsed);
+        Application::framerateCounter      = 0;
+        Application::framerateCounterStart = now;
+    }
+
+    int font = Application::getFont(FONT_REGULAR);
+    if (font == FONT_INVALID)
+        return;
+
+    std::string text = fmt::format("FPS: {}", Application::framerate);
+
+    nvgSave(vg);
+    nvgResetScissor(vg);
+
+    nvgFontFaceId(vg, font);
+    nvgFontSize(vg, 18.0f);
+    nvgTextAlign(vg, NVG_ALIGN_LEFT | NVG_ALIGN_TOP);
+
+    float bounds[4];
+    nvgTextBounds(vg, 0, 0, text.c_str(), nullptr, bounds);
+
+    float padding = 5.0f;
+    nvgBeginPath(vg);
+    nvgRect(vg, 0, 0, bounds[2] + padding * 2, bounds[3] + padding * 2);
+    nvgFillColor(vg, nvgRGBA(0, 0, 0, 180));
+    nvgFill(vg);
+
+    nvgFillColor(vg, nvgRGB(255, 255, 255));
+    nvgText(vg, padding, padding, text.c_str(), nullptr);
+
+    nvgRestore(vg);
 }
 
 ActionIdentifier Application::registerFPSToggleAction(Activity* activity)
