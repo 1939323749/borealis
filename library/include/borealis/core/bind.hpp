@@ -64,6 +64,21 @@ class BoundView
         return this->view;
     }
 
+    /**
+     * Manually sets the view, disabling the automatic resolution by ID.
+     */
+    void setView(T* view)
+    {
+        this->view   = view;
+        this->manual = true;
+    }
+
+    BoundView<T>& operator=(T* view)
+    {
+        this->setView(view);
+        return *this;
+    }
+
     operator T*()
     {
         return this->getView();
@@ -82,7 +97,8 @@ class BoundView
   private:
     std::string id = "";
 
-    T* view = nullptr;
+    T* view     = nullptr;
+    bool manual = false;
 
     View* ownerView         = nullptr;
     Activity* ownerActivity = nullptr;
@@ -97,7 +113,7 @@ class BoundView
      */
     void resolve()
     {
-        if (this->view)
+        if (this->view || this->manual)
             return;
 
         // Resolve by owner activity first

@@ -255,6 +255,7 @@ class View
     Box* parent = nullptr;
 
     GenericEvent focusEvent;
+    GenericEvent focusLostEvent;
 
     YGNode* ygNode;
 
@@ -1264,7 +1265,15 @@ class View
         // Nothing by default
     }
 
+    /**
+     * Fired when the view gains focus.
+     */
     GenericEvent* getFocusEvent();
+
+    /**
+     * Fired when the view loses focus.
+     */
+    GenericEvent* getFocusLostEvent();
 
     Animatable alpha = 1.0f;
 
