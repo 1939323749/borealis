@@ -98,7 +98,7 @@ class Image : public View
     /**
      * Sets the image from a memory buffer. The data read has to be
      * the same as if the image would've been read from a file.
-     * 
+     *
      * See NanoVG documentation and the Image class documentation for the
      * list of supported image formats.
      */
@@ -107,7 +107,7 @@ class Image : public View
     /**
      * Sets the image from a memory buffer. The data should be following the
      * R8G8B8A8 pixel format.
-     * 
+     *
      * See the RandomRGBAImage example implementation in the demo.
      */
     void setImageFromRGBA(const unsigned char* data, int width, int height);

@@ -281,8 +281,8 @@ void RecyclerFrame::cacheCellFrames()
             {
                 cacheIndexPathData.push_back(IndexPath(section, row, row));
 
-                float height = row == -1 ? 
-                    dataSource->heightForHeader(this, section) : 
+                float height = row == -1 ?
+                    dataSource->heightForHeader(this, section) :
                     dataSource->heightForRow(this, IndexPath(section, row, row));
 
                 if (height == -1)
@@ -381,11 +381,11 @@ void RecyclerFrame::addCellAt(uint32_t index, bool downSide)
         cell = dataSource->cellForRow(this, indexPath);
 
     cell->setWidth(renderedFrame.getWidth() - paddingLeft - paddingRight);
-    Point cellOrigin = Point(renderedFrame.getMinX() + paddingLeft, 
-        (downSide ? 
-            renderedFrame.getMaxY() : 
+    Point cellOrigin = Point(renderedFrame.getMinX() + paddingLeft,
+        (downSide ?
+            renderedFrame.getMaxY() :
             renderedFrame.getMinY() - cell->getHeight()) + paddingTop);
-            
+
     cell->setDetachedPosition(cellOrigin.x, cellOrigin.y);
     cell->setIndexPath(indexPath);
 

@@ -243,10 +243,10 @@ class Application
     inline static bool globalFPSToggleEnabled                = false;
     inline static ActionIdentifier gloablFPSToggleIdentifier = ACTION_NONE;
 
-    inline static bool displayFramerate        = false;
-    inline static unsigned framerateCounter    = 0;
-    inline static unsigned framerate           = 0;
-    inline static Time framerateCounterStart   = 0;
+    inline static bool displayFramerate      = false;
+    inline static unsigned framerateCounter  = 0;
+    inline static unsigned framerate         = 0;
+    inline static Time framerateCounterStart = 0;
 
     inline static View* repetitionOldFocus = nullptr;
 

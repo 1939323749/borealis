@@ -27,9 +27,9 @@
 #include <string>
 
 #include "captioned_image.hpp"
-#include "random_rgba_image.hpp"
 #include "components_tab.hpp"
 #include "main_activity.hpp"
+#include "random_rgba_image.hpp"
 #include "recycling_list_tab.hpp"
 
 using namespace brls::literals; // for _i18n

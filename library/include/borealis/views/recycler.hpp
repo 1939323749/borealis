@@ -114,7 +114,7 @@ class RecyclerDataSource
      * Asks the data source for a cell to insert in a particular location of the recycler frame.
      */
     virtual RecyclerCell* cellForRow(RecyclerFrame* recycler, IndexPath index) { return nullptr; }
-    
+
     /*
      * Asks the data source for a cell to display in the header of the specified section of the recycler frame.
      */
@@ -125,7 +125,7 @@ class RecyclerDataSource
      * Return -1 to use autoscaling.
      */
     virtual float heightForRow(RecyclerFrame* recycler, IndexPath index) { return -1; }
-    
+
     /*
      * Asks the data source for the height to use for the header of a particular section.
      * Return -1 to use autoscaling.

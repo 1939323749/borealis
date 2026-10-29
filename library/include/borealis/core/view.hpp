@@ -1073,7 +1073,7 @@ class View
 
     /**
      * Called each frame when touch is registered.
-     * 
+     *
      * @returns sound to play invoked by touch recognizers.
      */
     Sound gestureRecognizerRequest(TouchState touch, View* firstResponder);

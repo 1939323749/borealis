@@ -223,7 +223,7 @@ void Box::removeView(View* view, bool free)
     this->children.erase(this->children.begin() + index);
 
     view->willDisappear(true);
-    
+
     if (free)
         delete view;
 

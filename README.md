@@ -77,3 +77,28 @@ ninja -C build
     4. use `include` to load `borealis.mk` (after `LIBDIRS` and `BOREALIS_PATH`)
     5. it's important for `OUT_SHADERS` to be set to `shaders` since nanovg will look for the shaders there
     6. if you have issues with the `BRLS_RESOURCES` define (missing quote terminator), change the `@$(MAKE)` line to `@MSYS2_ARG_CONV_EXCL="-D;$(MSYS2_ARG_CONV_EXCL)" $(MAKE)` in the Makefile (as in the demo Makefile)
+
+### Fonts
+
+On Switch, the system shared fonts are used: the font matching the system language is used as the regular font, and the other ones are added as fallbacks following the system order (Chinese and Korean included). When running as an application every shared font is loaded, in applet mode only the ones needed by the current locale are. To save RAM, define one of these when building:
+
+- `SW_STANDARD_FONT_ONLY`: only load the Standard (Latin / Japanese) and symbols shared fonts
+- `SW_DISABLE_FONT_FALLBACK`: only load the shared fonts needed by the current locale, even as an application
+
+On PC, the following optional fonts can be put in the resources folder:
+
+- `User-Regular.ttf`: replaces the regular font (Inter)
+- `User-Fallback.ttf`: used for the glyphs missing from the regular font, for instance a CJK font
+- `User-Switch-Icons.ttf`: Switch buttons icons font
+
+### Touch
+
+Touch screens are supported on Switch. On PC, the mouse acts as a touch screen: clicks are taps and the wheel scrolls. Dragging to scroll is disabled on PC by the `NO_TOUCH_SCROLLING` define set in `library/meson.build`.
+
+## Fork notes
+
+This fork is maintained for personal use on top of the last upstream `main` (April 2021). Changes compared to upstream:
+
+- Builds with recent compilers (GCC 13) and recent libnx
+- Merged upstream pull requests: natinusala/borealis#77 (touch control), natinusala/borealis#153 (recycler view), natinusala/borealis#79 (Switch shared fonts fallback), natinusala/borealis#162 (images from memory / RGBA data), natinusala/borealis#165 (German translation), natinusala/borealis#176 (getMarginLeft fix), natinusala/borealis#177 (newer libnx support), with fixes on top
+- Fixed upstream issues: natinusala/borealis#116 (highlight pulsation), natinusala/borealis#126 (BoundView::setView), natinusala/borealis#128 (views and Yoga nodes leaks), natinusala/borealis#129 (sticks navigation), natinusala/borealis#147 (focus lost event), natinusala/borealis#154 (framerate counter), natinusala/borealis#171 (libnx build), natinusala/borealis#173 (buttons repetition speed)
