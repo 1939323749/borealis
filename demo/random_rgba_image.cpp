@@ -16,6 +16,9 @@
 
 #include "random_rgba_image.hpp"
 
+#include <cstdlib>
+#include <cstring>
+
 RandomRGBAImage::RandomRGBAImage()
 {
     // Load the XML file and inflate ourself with its content
@@ -46,7 +49,7 @@ bool RandomRGBAImage::onImageClicked(brls::View* view)
     return true;
 }
 
-unsigned char interp(unsigned char src, unsigned char dst, float alpha)
+static unsigned char interp(unsigned char src, unsigned char dst, float alpha)
 {
     return src * (1.0 - alpha) + dst * alpha;
 }
@@ -55,21 +58,21 @@ void RandomRGBAImage::generateRandomImage()
 {
     // Size of the image to generate
     int height = 256;
-    int width = 256;
+    int width  = 256;
 
     // Allocate the RGBA image buffer
-    size_t bufferSize = height * width * 4; // 4 bytes per pixel (RGBA8888)
+    size_t bufferSize        = height * width * 4; // 4 bytes per pixel (RGBA8888)
     unsigned char* imageData = (unsigned char*)calloc(1, bufferSize);
 
     // Randomly generate two colors for a gradient
-    unsigned char color1[3] = { 
-        static_cast<unsigned char>(std::rand() % 255), 
-        static_cast<unsigned char>(std::rand() % 255), 
+    unsigned char color1[3] = {
+        static_cast<unsigned char>(std::rand() % 255),
+        static_cast<unsigned char>(std::rand() % 255),
         static_cast<unsigned char>(std::rand() % 255)
     };
-    unsigned char color2[3] = { 
-        static_cast<unsigned char>(std::rand() % 255), 
-        static_cast<unsigned char>(std::rand() % 255), 
+    unsigned char color2[3] = {
+        static_cast<unsigned char>(std::rand() % 255),
+        static_cast<unsigned char>(std::rand() % 255),
         static_cast<unsigned char>(std::rand() % 255)
     };
 
@@ -79,9 +82,9 @@ void RandomRGBAImage::generateRandomImage()
         {
             // Set the pixel data
             memset(&imageData[(y * width + x) * 4 + 3], (unsigned char)255, sizeof(unsigned char)); // Alpha
-            memset(&imageData[(y * width + x) * 4 + 2], (unsigned char)interp(color1[2], color2[2], (float)x/(float)width), sizeof(unsigned char)); // Blue
-            memset(&imageData[(y * width + x) * 4 + 1], (unsigned char)interp(color1[1], color2[1], (float)x/(float)width), sizeof(unsigned char)); // Green
-            memset(&imageData[(y * width + x) * 4 + 0], (unsigned char)interp(color1[0], color2[0], (float)x/(float)width), sizeof(unsigned char)); // Red
+            memset(&imageData[(y * width + x) * 4 + 2], (unsigned char)interp(color1[2], color2[2], (float)x / (float)width), sizeof(unsigned char)); // Blue
+            memset(&imageData[(y * width + x) * 4 + 1], (unsigned char)interp(color1[1], color2[1], (float)x / (float)width), sizeof(unsigned char)); // Green
+            memset(&imageData[(y * width + x) * 4 + 0], (unsigned char)interp(color1[0], color2[0], (float)x / (float)width), sizeof(unsigned char)); // Red
         }
     }
 
@@ -94,6 +97,6 @@ void RandomRGBAImage::generateRandomImage()
 
 brls::View* RandomRGBAImage::create()
 {
-    // Called by the XML engine to create a new DynamicImage
+    // Called by the XML engine to create a new RandomRGBAImage
     return new RandomRGBAImage();
 }

@@ -29,6 +29,6 @@ class RandomRGBAImage : public brls::Box
     BRLS_BIND(brls::Image, image, "image");
 
     bool onImageClicked(brls::View* View);
-    
+
     void generateRandomImage();
 };

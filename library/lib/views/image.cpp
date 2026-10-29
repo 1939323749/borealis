@@ -292,15 +292,23 @@ void Image::setImageFromMemory(const unsigned char* data, int numData)
     int flags     = this->getImageFlags();
     this->texture = nvgCreateImageMem(vg, flags, (unsigned char*)data, numData);
 
+    // Data loaded from memory usually comes from an external source (network, archive...)
+    // so don't crash the app if it's invalid
     if (this->texture == 0)
-        fatal("Cannot load image from memory");
+    {
+        Logger::error("Cannot load image from memory ({} bytes)", numData);
+        this->originalImageWidth  = 0;
+        this->originalImageHeight = 0;
+        this->invalidate();
+        return;
+    }
 
     int width, height;
     nvgImageSize(vg, this->texture, &width, &height);
     this->originalImageWidth  = (float)width;
     this->originalImageHeight = (float)height;
 
-    this->invalidate();   
+    this->invalidate();
 }
 
 void Image::setImageFromRGBA(const unsigned char* data, int width, int height)
@@ -317,14 +325,17 @@ void Image::setImageFromRGBA(const unsigned char* data, int width, int height)
 
     if (this->texture == 0)
     {
-        brls::Logger::error("Cannot create image from RGBA data (" + std::to_string(width) + "x" + std::to_string(height) + ")");
+        Logger::error("Cannot create image from RGBA data ({}x{})", width, height);
+        this->originalImageWidth  = 0;
+        this->originalImageHeight = 0;
+        this->invalidate();
         return;
     }
 
     this->originalImageWidth  = (float)width;
     this->originalImageHeight = (float)height;
 
-    this->invalidate();   
+    this->invalidate();
 }
 
 void Image::setScalingType(ImageScalingType scalingType)

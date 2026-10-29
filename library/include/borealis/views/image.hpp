@@ -108,7 +108,7 @@ class Image : public View
      * Sets the image from a memory buffer. The data should be following the
      * R8G8B8A8 pixel format.
      * 
-     * See the example implementation dynamic_image in the demo.
+     * See the RandomRGBAImage example implementation in the demo.
      */
     void setImageFromRGBA(const unsigned char* data, int width, int height);
 
