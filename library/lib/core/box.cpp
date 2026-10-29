@@ -111,6 +111,15 @@ Box::Box()
     // Empty ctor for XML
 }
 
+Box::~Box()
+{
+    // The box owns its children
+    for (View* child : this->children)
+        delete child;
+
+    this->children.clear();
+}
+
 void Box::getCullingBounds(float* top, float* right, float* bottom, float* left)
 {
     *top    = this->getY();

@@ -126,6 +126,7 @@ SwitchPlatform::~SwitchPlatform()
     delete this->audioPlayer;
     delete this->inputManager;
     delete this->videoContext;
+    delete this->fontLoader;
 }
 
 } // namespace brls

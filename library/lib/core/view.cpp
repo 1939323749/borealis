@@ -1301,6 +1301,10 @@ View::~View()
 
     for (GestureRecognizer* recognizer : this->gestureRecognizers)
         delete recognizer;
+
+    // Free the Yoga node, also removes it from the parent node if any
+    YGNodeFree(this->ygNode);
+    this->ygNode = nullptr;
 }
 
 std::string View::getStringXMLAttributeValue(std::string value)
