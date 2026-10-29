@@ -50,8 +50,9 @@
 constexpr uint32_t ORIGINAL_WINDOW_WIDTH  = 1280;
 constexpr uint32_t ORIGINAL_WINDOW_HEIGHT = 720;
 
-#define BUTTON_REPEAT_DELAY 15
-#define BUTTON_REPEAT_CADENCY 5
+// Held buttons repeat after BUTTON_REPEAT_DELAY ms, every BUTTON_REPEAT_CADENCY ms
+#define BUTTON_REPEAT_DELAY 250
+#define BUTTON_REPEAT_CADENCY 83
 
 namespace brls
 {
@@ -242,31 +243,31 @@ bool Application::mainLoop()
     }
 
     // Trigger controller events
-    bool anyButtonPressed           = false;
-    bool repeating                  = false;
-    static Time buttonPressTime     = 0;
-    static int repeatingButtonTimer = 0;
+    // Repeating is time based and not frame based, otherwise the repeat
+    // speed would depend on the framerate (way too fast with uncapped framerate)
+    static Time buttonPressTime = 0;
+    static Time lastRepeatTime  = 0;
+    Time now                    = getCPUTimeUsec() / 1000;
+    bool anyButtonPressed       = false;
+    bool repeat                 = now - buttonPressTime >= BUTTON_REPEAT_DELAY && now - lastRepeatTime >= BUTTON_REPEAT_CADENCY;
 
     for (int i = 0; i < _BUTTON_MAX; i++)
     {
         if (controllerState.buttons[i])
         {
             anyButtonPressed = true;
-            repeating        = (repeatingButtonTimer > BUTTON_REPEAT_DELAY && repeatingButtonTimer % BUTTON_REPEAT_CADENCY == 0);
+            bool repeating   = oldControllerState.buttons[i];
 
-            if (!oldControllerState.buttons[i] || repeating)
+            if (!repeating || repeat)
                 Application::onControllerButtonPressed((enum ControllerButton)i, repeating);
         }
 
         if (controllerState.buttons[i] != oldControllerState.buttons[i])
-            buttonPressTime = repeatingButtonTimer = 0;
+            buttonPressTime = lastRepeatTime = now;
     }
 
-    if (anyButtonPressed && getCPUTimeUsec() - buttonPressTime > 1000)
-    {
-        buttonPressTime = getCPUTimeUsec();
-        repeatingButtonTimer++; // Increased once every ~1ms
-    }
+    if (anyButtonPressed && repeat)
+        lastRepeatTime = now;
 
     oldControllerState = controllerState;
 
