@@ -29,6 +29,7 @@ static constexpr const int FONT_INVALID = -1;
 static const std::string FONT_REGULAR        = "regular"; // regular font (borealis default font)
 static const std::string FONT_MATERIAL_ICONS = "material"; // Material icons font
 static const std::string FONT_SWITCH_ICONS   = "switch_icons"; // Switch icons font (see the HOS shared symbols font for an example)
+static const std::string FONT_FALLBACK       = "fallback"; // optional font used for the glyphs missing from the regular font (CJK...)
 
 // HOS shared fonts (Switch)
 static const std::string FONT_HOS_STANDARD        = "switch_standard"; // Switch Standard (Latin/Japanese) shared font

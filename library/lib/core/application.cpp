@@ -161,6 +161,9 @@ void Application::createWindow(std::string windowTitle)
 
     if (regular != FONT_INVALID)
     {
+        // Optional fallback font (CJK...)
+        Application::addFontFallback(FONT_REGULAR, FONT_FALLBACK);
+
         // Switch icons
         if (!switchIconsFallback && !Application::addFontFallback(FONT_REGULAR, FONT_SWITCH_ICONS))
             Logger::warning("Switch icons font was not loaded, icons will not be displayed");

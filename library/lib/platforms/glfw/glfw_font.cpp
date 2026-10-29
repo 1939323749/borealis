@@ -24,6 +24,7 @@
 #define INTER_FONT_PATH BRLS_ASSET("inter/Inter-Switch.ttf")
 
 #define USER_SWITCH_ICONS_PATH BRLS_ASSET("User-Switch-Icons.ttf")
+#define USER_FALLBACK_PATH BRLS_ASSET("User-Fallback.ttf")
 
 namespace brls
 {
@@ -37,7 +38,10 @@ void GLFWFontLoader::loadFonts()
     else
         this->loadFontFromFile(FONT_REGULAR, INTER_FONT_PATH);
 
-    // Korean unimplemented
+    // Fallback font for missing glyphs (CJK...)
+    // Optional, only supports user-provided font
+    if (access(USER_FALLBACK_PATH, F_OK) != -1)
+        this->loadFontFromFile(FONT_FALLBACK, USER_FALLBACK_PATH);
 
     // Switch icons
     // Only supports user-provided font
