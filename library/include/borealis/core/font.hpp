@@ -68,7 +68,7 @@ typedef std::vector<uint32_t> SharedFontFallbackOrder;
 class FontLoader
 {
   public:
-    virtual ~FontLoader() {}
+    virtual ~FontLoader() { }
     /**
      * Called once on init to load every font in the font stash.
      *

@@ -1,5 +1,6 @@
 /*
     Copyright 2021 natinusala
+    Copyright (C) 2021  XITRIX
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -30,6 +31,8 @@ class SwitchInputManager : public InputManager
     SwitchInputManager();
 
     void updateControllerState(ControllerState* state);
+
+    void updateTouchState(RawTouchState* state);
 
   private:
     PadState padState;
